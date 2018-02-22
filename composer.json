@@ -1,0 +1,19 @@
+{
+    "name": "wtf/middleware-filters",
+    "description": "Built for wtf/orm",
+    "license": "MIT",
+    "prefer-stable": true,
+    "require": {
+        "wtf/core": "^1",
+        "wtf/orm": "^1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wtf\\Middleware\\": "src/"
+        }
+    },
+    "replace": {
+        "tisuit/middleware-filters": "*"
+    }
+}
+

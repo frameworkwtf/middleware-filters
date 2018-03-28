@@ -58,7 +58,7 @@ class Filters extends Root
             if ('null' === $value) {
                 $filters[$field][$key] = null;
             }
-            if (strpos($field, '[')) {
+            if (\strpos($field, '[')) {
                 $filters[$field.']'] = $value;
                 unset($filters[$field]);
             }

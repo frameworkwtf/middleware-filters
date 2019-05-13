@@ -42,16 +42,13 @@ class Filters extends Root
      */
     protected function process(ServerRequestInterface $request): array
     {
-        $filters = $request->getQueryParam('filter') ?? [];
-        $limit = [0, 100];
+        $filters = $request->getQueryParams()['filter'] ?? [];
+        $this->logger->info('Original filters', $filters);
+        $limit = [];
 
         // Prepare limit and offset
-        if ($request->getQueryParam('offset')) {
-            $limit[0] = $filters['offset'];
-        }
-        if ($request->getQueryParam('limit')) {
-            $limit[1] = $filters['limit'];
-        }
+        $limit[0] = $request->getQueryParam('offset') ? $request->getQueryParam('offset') : 0;
+        $limit[1] = $request->getQueryParam('limit') ? $request->getQueryParam('limit') : 100;
 
         // Fix filter symbols issue (like missing "]")
         foreach ($filters as $field => $value) {

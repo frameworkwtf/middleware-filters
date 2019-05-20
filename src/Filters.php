@@ -43,7 +43,6 @@ class Filters extends Root
     protected function process(ServerRequestInterface $request): array
     {
         $filters = $request->getQueryParams()['filter'] ?? [];
-        $this->logger->info('Original filters', $filters);
         $limit = [];
 
         // Prepare limit and offset

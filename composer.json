@@ -4,16 +4,35 @@
     "license": "MIT",
     "prefer-stable": true,
     "require": {
-        "wtf/core": "^1",
-        "wtf/orm": "^1"
+        "wtf/core": "^2",
+        "wtf/orm": "^2"
     },
     "autoload": {
         "psr-4": {
             "Wtf\\Middleware\\": "src/"
         }
     },
-    "replace": {
-        "tisuit/middleware-filters": "*"
+    "authors": [
+        {
+            "name": "Nikita Chernyi",
+            "email": "osi@rakshazi.me",
+            "homepage": "https://rakshazi.me"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/frameworkwtf/middleware-filters/issues"
+    },
+    "scripts": {
+        "test:cs": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "test:unit": "vendor/bin/phpunit -c phpunit.xml.dist",
+        "test:upload": "vendor/bin/php-coveralls -v"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable",
+        "php-coveralls/php-coveralls": "^2.1",
+        "friendsofphp/php-cs-fixer": "^2.15"
     }
+}
+
 }
 

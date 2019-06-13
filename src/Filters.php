@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Wtf\Middleware;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Response;
 use Wtf\Root;
 
 /**
- * Add `filters` key into container with current filters.
+ * Add `__wtf_orm_filters` key into container with current filters, based on medoo WHERE syntax.
  *
- * @see https://www.slimframework.com/docs/concepts/middleware.html
+ * @see http://dev.slimframework.com/docs/v4/concepts/middleware.html
+ * @see https://medoo.in/api/where
  *
  * @example https://example.com?filter[created_at]=2017-05-05
  */
@@ -20,30 +22,30 @@ class Filters extends Root
     /**
      * @see https://www.slimframework.com/docs/concepts/middleware.html
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable               $next
+     * @param ServerRequest  $request PSR-7 request
+     * @param RequestHandler $handler PSR-15 request handler
      *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function __invoke(Request $request, RequestHandler $handler): Response
     {
-        $this->container['filters'] = $this->process($request);
+        $this->container->add('__wtf_orm_filters', $this->process($request));
 
-        return $next($request, $response);
+        $response = $handler->handle($request);
+
+        return $response;
     }
 
     /**
      * Process filters from request.
      *
-     * @param ServerRequestInterface $request
+     * @param ServerRequest $request
      *
      * @return array
      */
-    protected function process(ServerRequestInterface $request): array
+    protected function process(ServerRequest $request): array
     {
         $filters = $request->getQueryParams()['filter'] ?? [];
-        $this->logger->info('Original filters', $filters);
         $limit = [];
 
         // Prepare limit and offset

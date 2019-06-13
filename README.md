@@ -16,19 +16,19 @@ Add new middleware to your provider:
 ```php
 <?php
 
-$container['middleware_filters'] = function ($c) {
+$container['__wtf_middleware_filters'] = function ($c) {
     return new \Wtf\Middleware\Filters($c);
 };
 ```
 
-Add it to your `suit.php` middleware list:
+Add it to your `wtf.php` middleware list:
 
 ```php
 <?php
 //...
 'middlewares' => [
 //...
-    'middleware_filters',
+    '__wtf_middleware_filters',
 //...
 ],
 ```
@@ -52,5 +52,9 @@ And inside your code:
 ```php
 <?php
 
-$collection = $this->entity('employee')->loadAll($this->container['filters']);
+// Filters will be applied automatically
+$collection = $this->entity('employee')->loadAll();
+
+//You can directly access filters array with:
+$filters = $this->container->get('__wtf_orm_filters');
 ```

@@ -3,11 +3,11 @@ language: php
 
 git:
   depth: 1
-                                                                                                                                                                                             
-cache:                                                                                                                                                                                       
-  directories:                                                                                                                                                                               
-    - $HOME/.composer                                                                                                                                                                        
-                                                                                                                                                                                             
+
+cache:
+  directories:
+    - $HOME/.composer
+
 env:
   global:
     - PHP_CS_FIXER_IGNORE_ENV=1

@@ -19,12 +19,6 @@ class Filters extends Root
 {
     /**
      * @see https://www.slimframework.com/docs/concepts/middleware.html
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable               $next
-     *
-     * @return ResponseInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
@@ -34,11 +28,34 @@ class Filters extends Root
     }
 
     /**
+     * Fix brackets in field names.
+     *
+     * @param string $field Field name, eg: user_name[~
+     * @param mixed  $value Anything (including arrays
+     *
+     * @return array [$field, $value], eg: ["user_name[~]", ["user1", "user2", "user3"]
+     */
+    protected function fixBrackets(string $field, $value): array
+    {
+        if (\is_array($value)) {
+            foreach ($value as $vKey => $vValue) {
+                unset($value[$vKey]);
+                [$fixedVKey, $fixedVValue] = $this->fixBrackets($vKey, $vValue);
+                $value[$fixedVKey] = $fixedVValue;
+            }
+        }
+        if ('null' === $value) {
+            $value = null;
+        }
+        if (false !== \strpos($field, '[')) {
+            $field = $field.']';
+        }
+
+        return [$field, $value];
+    }
+
+    /**
      * Process filters from request.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return array
      */
     protected function process(ServerRequestInterface $request): array
     {
@@ -51,13 +68,9 @@ class Filters extends Root
 
         // Fix filter symbols issue (like missing "]")
         foreach ($filters as $field => $value) {
-            if ('null' === $value) {
-                $filters[$field][$key] = null;
-            }
-            if (\strpos($field, '[')) {
-                $filters[$field.']'] = $value;
-                unset($filters[$field]);
-            }
+            unset($filters[$field]);
+            [$field, $value] = $this->fixBrackets($field, $value);
+            $filters[$field] = $value;
         }
 
         $filters['LIMIT'] = $limit;

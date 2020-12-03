@@ -37,10 +37,6 @@ class Filters extends Root
      */
     protected function fixBrackets($field = null, $value = null): array
     {
-        if (!$field) {
-            return [$field, $value];
-        }
-
         if (\is_array($value)) {
             foreach ($value as $vKey => $vValue) {
                 unset($value[$vKey]);
@@ -53,7 +49,7 @@ class Filters extends Root
             $value = null;
         }
 
-        if (false !== \strpos($field, '[')) {
+        if (\is_string($field) && false !== \strpos($field, '[')) {
             $field = $field.']';
         }
 

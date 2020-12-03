@@ -30,13 +30,17 @@ class Filters extends Root
     /**
      * Fix brackets in field names.
      *
-     * @param string $field Field name, eg: user_name[~
-     * @param mixed  $value Anything (including arrays
+     * @param mixed $field Field name, eg: user_name[~
+     * @param mixed $value Anything (including arrays
      *
      * @return array [$field, $value], eg: ["user_name[~]", ["user1", "user2", "user3"]
      */
-    protected function fixBrackets(string $field, $value): array
+    protected function fixBrackets($field = null, $value = null): array
     {
+        if (!$field) {
+            return [$field, $value];
+        }
+
         if (\is_array($value)) {
             foreach ($value as $vKey => $vValue) {
                 unset($value[$vKey]);
@@ -44,9 +48,11 @@ class Filters extends Root
                 $value[$fixedVKey] = $fixedVValue;
             }
         }
+
         if ('null' === $value) {
             $value = null;
         }
+
         if (false !== \strpos($field, '[')) {
             $field = $field.']';
         }
